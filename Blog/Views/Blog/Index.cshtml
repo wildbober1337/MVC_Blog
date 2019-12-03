@@ -1,0 +1,69 @@
+﻿@model Blog.Models.BlogsListViewModel
+@{
+    ViewBag.Title = "Каталог Блогов";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Каталог Блогов</h2>
+@ViewData["tags"]
+<form method="get" action="/Blog/Create">
+    <input type="hidden" value="@ViewData["username"]" name="name" />
+    <table>
+        <tr class="create">
+            <td><input type="submit" value="Создать новый Блог" /> </td>
+        </tr>
+    </table>
+    <p></p>
+</form>
+<form method="get">
+    <div class="form-inline">
+        <label class="control-label"> Категория: </label>
+        @Html.DropDownList("categories", Model.Categories as SelectList,
+                 htmlAttributes: new { @class = "form-control" })
+        <label class="control-label"> #Тэг: </label>
+        @Html.DropDownList("tag", Model.Tags as SelectList,
+                                                   htmlAttributes: new { @class = "form-control" })
+        <input type="submit" value="Фильтр" class="btn btn-default" />
+    </div>
+</form>
+Примечание - Категория имеет приоритет сортировки выше чем теги.
+<p>Чтобы отсортировать по тэгам нужно выбрать соот. раздел категорий.</p>
+<table>
+    <tr class="list-blog">
+        <th>Название</th>
+        <th>Категория</th>
+        <th>Автор</th>
+        <th></th>
+    </tr>
+    @foreach (var item in Model.Blogs)
+    {
+        <tr class="list-blog">
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tag)
+            </td>
+            <td>
+                @Html.ActionLink(Html.DisplayFor(modelItem => item.Author.Name).ToString(), "AuthorDetails/" + item.Author.Id)
+                @*Html.ActionLink(Html.DisplayFor(modelItem => item.Author.Name).ToString(), "AuthorDetails", item.Author.Id)*@
+            </td>
+            <td>
+                @Html.ActionLink("Редактировать", "EditBlog", new { id = item.Id }) |
+                @Html.ActionLink("Удалить", "Delete", new { id = item.Id }) |
+                @Html.ActionLink("Читать", "Read", new { id = item.Id })
+            </td>
+        </tr>
+    }
+</table>
+<p>
+    @ViewBag.Result
+</p>
+<p>
+    @Html.ActionLink("Login", "Login")
+</p>
+<p>
+    @Html.ActionLink("Register", "Register")
+</p>
+<p>
+    @Html.ActionLink("Exit", "Logoff")
+</p>
